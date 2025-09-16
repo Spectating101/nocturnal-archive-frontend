@@ -17,6 +17,12 @@ export default function HomePage() {
             <span className="text-xl font-bold text-white">Nocturnal Archive</span>
           </div>
           <div className="flex items-center space-x-4">
+            <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
+              About
+            </Link>
+            <Link href="/pricing" className="text-gray-300 hover:text-white transition-colors">
+              Pricing
+            </Link>
             <Link href="/research" className="text-gray-300 hover:text-white transition-colors">
               Research
             </Link>
@@ -28,9 +34,9 @@ export default function HomePage() {
       </nav>
       
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 overflow-y-auto">
       {/* Hero Section */}
-      <div className="text-center space-y-8 max-w-4xl mx-auto px-6">
+      <div className="text-center space-y-8 max-w-4xl mx-auto px-6 py-12">
         {/* Logo and Title */}
         <div className="space-y-4">
           <div className="flex justify-center">
