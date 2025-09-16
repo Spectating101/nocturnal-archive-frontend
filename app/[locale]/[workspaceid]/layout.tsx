@@ -142,20 +142,20 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     const folders = await getFoldersByWorkspaceId(workspaceId)
     setFolders(folders)
 
-    const fileData = await getFileWorkspacesByWorkspaceId(workspaceId)
-    setFiles(fileData.files)
+    const fileData = await getFileWorkspacesByWorkspaceId(workspaceId) as any
+    setFiles(fileData?.files || [])
 
-    const presetData = await getPresetWorkspacesByWorkspaceId(workspaceId)
-    setPresets(presetData.presets)
+    const presetData = await getPresetWorkspacesByWorkspaceId(workspaceId) as any
+    setPresets(presetData?.presets || [])
 
-    const promptData = await getPromptWorkspacesByWorkspaceId(workspaceId)
-    setPrompts(promptData.prompts)
+    const promptData = await getPromptWorkspacesByWorkspaceId(workspaceId) as any
+    setPrompts(promptData?.prompts || [])
 
-    const toolData = await getToolWorkspacesByWorkspaceId(workspaceId)
-    setTools(toolData.tools)
+    const toolData = await getToolWorkspacesByWorkspaceId(workspaceId) as any
+    setTools(toolData?.tools || [])
 
-    const modelData = await getModelWorkspacesByWorkspaceId(workspaceId)
-    setModels(modelData.models)
+    const modelData = await getModelWorkspacesByWorkspaceId(workspaceId) as any
+    setModels(modelData?.models || [])
 
     setChatSettings({
       model: (searchParams.get("model") ||
