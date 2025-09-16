@@ -23,6 +23,9 @@ export default function HomePage() {
             <Link href="/pricing" className="text-gray-300 hover:text-white transition-colors">
               Pricing
             </Link>
+            <Link href="/status" className="text-gray-300 hover:text-white transition-colors">
+              Status
+            </Link>
             <Link href="/research" className="text-gray-300 hover:text-white transition-colors">
               Research
             </Link>
@@ -156,11 +159,54 @@ export default function HomePage() {
         </div>
 
         {/* Footer */}
-        <div className="mt-16 text-center">
-          <p className="text-gray-500 text-sm">
-            Powered by advanced AI • Built for researchers • Designed for discovery
-          </p>
-        </div>
+        <footer className="mt-16 border-t border-gray-800 pt-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-indigo-600 rounded flex items-center justify-center">
+                  <IconBrain className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-lg font-bold text-white">Nocturnal Archive</span>
+              </div>
+              <p className="text-gray-400 text-sm">
+                AI-powered research platform for academic discovery and knowledge synthesis.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="text-white font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/research" className="text-gray-400 hover:text-white transition-colors">Research Assistant</Link></li>
+                <li><Link href="/pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/status" className="text-gray-400 hover:text-white transition-colors">Status</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/about" className="text-gray-400 hover:text-white transition-colors">About</Link></li>
+                <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</Link></li>
+                <li><Link href="/careers" className="text-gray-400 hover:text-white transition-colors">Careers</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="text-white font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link href="/cookies" className="text-gray-400 hover:text-white transition-colors">Cookie Policy</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 pt-6 text-center">
+            <p className="text-gray-500 text-sm">
+              © 2024 Nocturnal Archive. All rights reserved. • Powered by advanced AI • Built for researchers • Designed for discovery
+            </p>
+          </div>
+        </footer>
       </div>
       </div>
     </div>
