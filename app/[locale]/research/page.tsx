@@ -235,15 +235,15 @@ export default function ResearchPage() {
               </button>
               
               <button 
-                onClick={() => alert('Recent research feature coming soon!')}
-                className="w-full text-left p-3 rounded-lg bg-gray-700/50 hover:bg-gray-700/70 transition-colors cursor-pointer"
+                onClick={() => alert(&apos;Recent research feature coming soon!&apos;)}
+                className="w-full cursor-pointer rounded-lg bg-gray-700/50 p-3 text-left transition-colors hover:bg-gray-700/70"
               >
                 <span className="text-sm text-gray-300">View Recent Research</span>
               </button>
               
               <button 
-                onClick={() => alert('Export feature coming soon!')}
-                className="w-full text-left p-3 rounded-lg bg-gray-700/50 hover:bg-gray-700/70 transition-colors cursor-pointer"
+                onClick={() => alert(&apos;Export feature coming soon!&apos;)}
+                className="w-full cursor-pointer rounded-lg bg-gray-700/50 p-3 text-left transition-colors hover:bg-gray-700/70"
               >
                 <span className="text-sm text-gray-300">Export Results</span>
               </button>

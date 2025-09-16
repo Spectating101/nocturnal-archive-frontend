@@ -10,6 +10,11 @@ import { SidebarContent } from "./sidebar-content"
 import { Button } from "../ui/button"
 import { IconBrain, IconFileText, IconChartLine } from "@tabler/icons-react"
 
+// Import the missing sidebar components
+const ChatsSidebar = SidebarContent
+const FilesSidebar = SidebarContent  
+const SettingsSidebar = SidebarContent
+
 interface SidebarProps {
   contentType: ContentType
   showSidebar: boolean
