@@ -171,7 +171,7 @@ export default function MobileResearchPage() {
   };
 
   return (
-    <div className="h-screen">
+    <div className="h-screen md:hidden">
       <MobileOptimizedChat
         messages={messages}
         onSend={handleSend}

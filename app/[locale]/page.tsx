@@ -30,7 +30,7 @@ export default function HomePage() {
               Research
             </Link>
             <Link href="/research-advanced" className="text-gray-300 hover:text-white transition-colors">
-              Advanced
+              Pro
             </Link>
             <Link href="/research" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Get Started

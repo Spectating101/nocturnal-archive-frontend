@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { IconBrain, IconSend, IconLoader2, IconInfoCircle } from "@tabler/icons-react"
+import { IconBrain, IconSend, IconLoader2, IconInfoCircle, IconHistory, IconSettings } from "@tabler/icons-react"
 import CitationList from "@/components/CitationList"
 import ErrorToast from "@/components/ErrorToast"
 import { askResearch, checkHealth, type ResearchResponse, type Citation } from "@/lib/api"
@@ -162,10 +162,10 @@ export default function ResearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900">
+    <div className="h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 flex flex-col">
       {/* Header */}
-      <div className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+      <div className="flex-shrink-0 border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+        <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
@@ -189,89 +189,169 @@ export default function ResearchPage() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* Chat Input */}
-        <div className="mb-8">
-          <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-            <div className="space-y-4">
-              <textarea
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask a research question... (e.g., 'Summarize recent advances in machine learning')"
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                rows={3}
-                disabled={loading}
-              />
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-400">
-                  Press Enter to send • Shift+Enter for new line
+      {/* Main Content - Two Column Layout */}
+      <div className="flex-1 flex">
+        {/* Left Column - Chat Interface */}
+        <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col p-6">
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto space-y-4 pr-4">
+              {messages.length === 0 && (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <IconBrain className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-2">Start Your Research</h3>
+                    <p className="text-gray-400 max-w-md">
+                      Ask me anything about academic research. I can help with literature reviews, 
+                      finding papers, and synthesizing information from multiple sources.
+                    </p>
+                  </div>
                 </div>
-                <button
-                  onClick={handleSubmit}
-                  disabled={loading || !query.trim()}
-                  className="flex items-center space-x-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {loading ? (
-                    <IconLoader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <IconSend className="w-4 h-4" />
-                  )}
-                  <span>{loading ? "Researching..." : "Ask"}</span>
-                </button>
+              )}
+
+              {messages.map((message) => (
+                <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[80%] ${message.type === 'user' ? 'order-2' : 'order-1'}`}>
+                    {message.type === 'user' ? (
+                      <div className="bg-blue-600 text-white rounded-lg p-3">
+                        <div className="whitespace-pre-wrap text-sm">{message.content}</div>
+                      </div>
+                    ) : (
+                      <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
+                        <div className="prose prose-invert max-w-none">
+                          <div className="whitespace-pre-wrap text-white text-sm">{message.content}</div>
+                        </div>
+                        {message.citations && message.citations.length > 0 && (
+                          <CitationList items={message.citations} />
+                        )}
+                      </div>
+                    )}
+                    <div className={`text-xs text-gray-500 mt-1 ${message.type === 'user' ? 'text-right' : 'text-left'}`}>
+                      {message.timestamp.toLocaleTimeString()}
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10 max-w-[80%]">
+                    <div className="flex items-center space-x-2 text-gray-300">
+                      <IconLoader2 className="w-4 h-4 animate-spin" />
+                      <span className="text-sm">Researching your question...</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Chat Input */}
+            <div className="flex-shrink-0 pt-4">
+              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                <div className="space-y-3">
+                  <textarea
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Ask a research question..."
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    rows={2}
+                    disabled={loading}
+                  />
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-400">
+                      Press Enter to send • Shift+Enter for new line
+                    </div>
+                    <button
+                      onClick={handleSubmit}
+                      disabled={loading || !query.trim()}
+                      className="flex items-center space-x-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {loading ? (
+                        <IconLoader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <IconSend className="w-4 h-4" />
+                      )}
+                      <span>{loading ? "Researching..." : "Ask"}</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Messages */}
-        <div className="space-y-6">
-          {messages.length === 0 && (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <IconBrain className="w-8 h-8 text-white" />
+        {/* Right Column - Tools & Info */}
+        <div className="w-80 border-l border-gray-800 bg-gray-900/50 flex flex-col">
+          <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            {/* Quick Actions */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+              <div className="space-y-2">
+                <button className="w-full text-left px-3 py-2 bg-gray-800/50 text-gray-300 rounded-lg hover:bg-gray-700/50 transition-colors text-sm">
+                  <IconHistory className="w-4 h-4 inline mr-2" />
+                  View History
+                </button>
+                <button className="w-full text-left px-3 py-2 bg-gray-800/50 text-gray-300 rounded-lg hover:bg-gray-700/50 transition-colors text-sm">
+                  <IconSettings className="w-4 h-4 inline mr-2" />
+                  Settings
+                </button>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Start Your Research</h3>
-              <p className="text-gray-400 max-w-md mx-auto">
-                Ask me anything about academic research. I can help with literature reviews, 
-                finding papers, and synthesizing information from multiple sources.
-              </p>
             </div>
-          )}
 
-          {messages.map((message) => (
-            <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-3xl ${message.type === 'user' ? 'order-2' : 'order-1'}`}>
-                <div className={`rounded-lg p-4 ${
-                  message.type === 'user' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-white/5 backdrop-blur-sm border border-white/10 text-white'
-                }`}>
-                  <div className="prose prose-invert max-w-none">
-                    <div className="whitespace-pre-wrap">{message.content}</div>
+            {/* Suggested Queries */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-4">Suggested Queries</h3>
+              <div className="space-y-2">
+                {[
+                  "Machine learning advances",
+                  "Quantum computing research",
+                  "AI in healthcare",
+                  "Climate change solutions",
+                  "Space exploration"
+                ].map((suggestion, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setQuery(suggestion)}
+                    className="w-full text-left px-3 py-2 bg-gray-800/50 text-gray-300 rounded-lg hover:bg-gray-700/50 transition-colors text-sm"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* System Status */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-4">System Status</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300 text-sm">Backend</span>
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-2 h-2 rounded-full ${
+                      healthStatus === "ok" ? "bg-green-400" : 
+                      healthStatus === "degraded" ? "bg-yellow-400" : "bg-red-400"
+                    }`} />
+                    <span className={`text-sm ${
+                      healthStatus === "ok" ? "text-green-400" : 
+                      healthStatus === "degraded" ? "text-yellow-400" : "text-red-400"
+                    }`}>
+                      {healthStatus === "ok" ? "Online" : 
+                       healthStatus === "degraded" ? "Degraded" : "Offline"}
+                    </span>
                   </div>
-                  {message.citations && message.citations.length > 0 && (
-                    <CitationList items={message.citations} />
-                  )}
                 </div>
-                <div className={`text-xs text-gray-500 mt-1 ${message.type === 'user' ? 'text-right' : 'text-left'}`}>
-                  {message.timestamp.toLocaleTimeString()}
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {loading && (
-            <div className="flex justify-start">
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-white/10">
-                <div className="flex items-center space-x-2 text-gray-300">
-                  <IconLoader2 className="w-4 h-4 animate-spin" />
-                  <span>Researching your question...</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300 text-sm">Mode</span>
+                  <span className={`text-sm ${demoMode ? "text-yellow-400" : "text-green-400"}`}>
+                    {demoMode ? "Demo" : "Live"}
+                  </span>
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
 
