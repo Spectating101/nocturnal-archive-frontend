@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
+  const { message, sessionId } = await req.json()
+  
   try {
-    const { message, sessionId } = await req.json()
-
     // Call our Nocturnal Archive backend with real research capabilities
     const response = await fetch('http://127.0.0.1:8002/api/chat', {
       method: 'POST',

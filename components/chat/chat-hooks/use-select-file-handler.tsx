@@ -63,9 +63,8 @@ export const useSelectFileHandler = () => {
           simplifiedFileType = "pdf"
         } else if (
           simplifiedFileType.includes(
-            "vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-              "docx"
-          )
+            "vnd.openxmlformats-officedocument.wordprocessingml.document"
+          ) || simplifiedFileType.includes("docx")
         ) {
           simplifiedFileType = "docx"
         }
@@ -82,10 +81,8 @@ export const useSelectFileHandler = () => {
 
         // Handle docx files
         if (
-          file.type.includes(
-            "vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-              "docx"
-          )
+          file.type.includes("vnd.openxmlformats-officedocument.wordprocessingml.document") ||
+          file.type.includes("docx")
         ) {
           const arrayBuffer = await file.arrayBuffer()
           const result = await mammoth.extractRawText({
@@ -114,9 +111,9 @@ export const useSelectFileHandler = () => {
             prev.map(item =>
               item.id === "loading"
                 ? {
-                    id: createdFile.id,
-                    name: createdFile.name,
-                    type: createdFile.type,
+                    id: (createdFile as any).id,
+                    name: (createdFile as any).name,
+                    type: (createdFile as any).type,
                     file: file
                   }
                 : item
@@ -175,9 +172,9 @@ export const useSelectFileHandler = () => {
               prev.map(item =>
                 item.id === "loading"
                   ? {
-                      id: createdFile.id,
-                      name: createdFile.name,
-                      type: createdFile.type,
+                      id: (createdFile as any).id,
+                      name: (createdFile as any).name,
+                      type: (createdFile as any).type,
                       file: file
                     }
                   : item

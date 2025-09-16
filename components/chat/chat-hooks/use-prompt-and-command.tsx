@@ -109,13 +109,13 @@ export const usePromptAndCommand = () => {
     )
 
     setNewMessageFiles(prev => {
-      const newFiles = collectionFiles.files
+      const newFiles = (collectionFiles as any).files
         .filter(
-          file =>
+          (file: any) =>
             !prev.some(prevFile => prevFile.id === file.id) &&
             !chatFiles.some(chatFile => chatFile.id === file.id)
         )
-        .map(file => ({
+        .map((file: any) => ({
           id: file.id,
           name: file.name,
           type: file.type,
@@ -151,19 +151,19 @@ export const usePromptAndCommand = () => {
 
     let allFiles = []
 
-    const assistantFiles = (await getAssistantFilesByAssistantId(assistant.id))
+    const assistantFiles = (await getAssistantFilesByAssistantId(assistant.id) as any)
       .files
     allFiles = [...assistantFiles]
     const assistantCollections = (
-      await getAssistantCollectionsByAssistantId(assistant.id)
+      await getAssistantCollectionsByAssistantId(assistant.id) as any
     ).collections
     for (const collection of assistantCollections) {
       const collectionFiles = (
-        await getCollectionFilesByCollectionId(collection.id)
+        await getCollectionFilesByCollectionId(collection.id) as any
       ).files
       allFiles = [...allFiles, ...collectionFiles]
     }
-    const assistantTools = (await getAssistantToolsByAssistantId(assistant.id))
+    const assistantTools = (await getAssistantToolsByAssistantId(assistant.id) as any)
       .tools
 
     setSelectedTools(assistantTools)

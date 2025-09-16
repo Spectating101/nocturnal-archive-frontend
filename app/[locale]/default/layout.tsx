@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { GlobalState } from "@/components/utility/global-state"
 
-export default function DefaultLayout({ children }) {
+export default function DefaultLayout({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   if (!mounted) return null
@@ -28,18 +28,7 @@ export default function DefaultLayout({ children }) {
   }
 
   return (
-    <GlobalState
-      workspace={mockWorkspace}
-      profile={mockProfile}
-      assistants={[]}
-      chats={[]}
-      files={[]}
-      collections={[]}
-      tools={[]}
-      models={[]}
-      folders={[]}
-      prompts={[]}
-    >
+    <GlobalState>
       {children}
     </GlobalState>
   )

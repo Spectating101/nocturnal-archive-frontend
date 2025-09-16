@@ -116,21 +116,21 @@ export const useChatHandler = () => {
       let allFiles = []
 
       const assistantFiles = (
-        await getAssistantFilesByAssistantId(selectedAssistant.id)
-      ).files
+        await getAssistantFilesByAssistantId(selectedAssistant.id) as any
+      ).files || []
       allFiles = [...assistantFiles]
       const assistantCollections = (
-        await getAssistantCollectionsByAssistantId(selectedAssistant.id)
-      ).collections
+        await getAssistantCollectionsByAssistantId(selectedAssistant.id) as any
+      ).collections || []
       for (const collection of assistantCollections) {
         const collectionFiles = (
-          await getCollectionFilesByCollectionId(collection.id)
-        ).files
+          await getCollectionFilesByCollectionId(collection.id) as any
+        ).files || []
         allFiles = [...allFiles, ...collectionFiles]
       }
       const assistantTools = (
-        await getAssistantToolsByAssistantId(selectedAssistant.id)
-      ).tools
+        await getAssistantToolsByAssistantId(selectedAssistant.id) as any
+      ).tools || []
 
       setSelectedTools(assistantTools)
       setChatFiles(
@@ -338,7 +338,7 @@ export const useChatHandler = () => {
         console.log("Full model data:", modelData)
         console.log("About to check provider conditions...")
 
-        if (modelData!.provider === "ollama") {
+        if ((modelData!.provider as any) === "ollama") {
           console.log("Ollama provider detected")
           generatedText = await handleLocalChat(
             payload,
@@ -488,7 +488,7 @@ export const useChatHandler = () => {
 
         setChats(prevChats => {
           const updatedChats = prevChats.map(prevChat =>
-            prevChat.id === updatedChat.id ? updatedChat : prevChat
+            (prevChat as any).id === (updatedChat as any).id ? updatedChat : prevChat
           )
 
           return updatedChats

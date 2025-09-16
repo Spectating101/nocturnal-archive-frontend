@@ -70,9 +70,9 @@ export default function SetupPage() {
       } else {
         const user = session.user
 
-        const profile = await getProfileByUserId(user.id)
+        const profile = await getProfileByUserId(user.id) as any
         setProfile(profile)
-        setUsername(profile.username)
+        setUsername(profile?.username || "")
 
         if (!profile.has_onboarded) {
           setLoading(false)
@@ -121,7 +121,6 @@ export default function SetupPage() {
     const profile = await getProfileByUserId(user.id)
 
     const updateProfilePayload: TablesUpdate<"profiles"> = {
-      ...profile,
       has_onboarded: true,
       display_name: displayName,
       username,
@@ -142,11 +141,11 @@ export default function SetupPage() {
       azure_openai_embeddings_id: azureOpenaiEmbeddingsID
     }
 
-    const updatedProfile = await updateProfile(profile.id, updateProfilePayload)
+    const updatedProfile = await updateProfile((profile as any)?.id || user.id, updateProfilePayload)
     setProfile(updatedProfile)
 
-    const workspaces = await getWorkspacesByUserId(profile.user_id)
-    const homeWorkspace = workspaces.find(w => w.is_home)
+    const workspaces = await getWorkspacesByUserId((profile as any)?.user_id || user.id) as any
+    const homeWorkspace = workspaces?.find((w: any) => w.is_home)
 
     // There will always be a home workspace
     setSelectedWorkspace(homeWorkspace!)

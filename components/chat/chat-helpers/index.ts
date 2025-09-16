@@ -231,12 +231,12 @@ export const handleHostedChat = async (
   }
 
   const apiEndpoint =
-    provider === "custom" ? "/api/chat/custom" : `/api/chat/${provider}`
+    (provider as any) === "custom" ? "/api/chat/custom" : `/api/chat/${provider}`
 
   const requestBody = {
     chatSettings: payload.chatSettings,
     messages: formattedMessages,
-    customModelId: provider === "custom" ? modelData.hostedId : ""
+    customModelId: (provider as any) === "custom" ? modelData.hostedId : ""
   }
 
   const response = await fetchChatResponse(
@@ -389,7 +389,7 @@ export const handleCreateChat = async (
   await createChatFiles(
     newMessageFiles.map(file => ({
       user_id: profile.user_id,
-      chat_id: createdChat.id,
+      chat_id: (createdChat as any).id,
       file_id: file.id
     }))
   )
@@ -464,7 +464,7 @@ export const handleCreateMessages = async (
       .filter(obj => obj.file !== null)
       .map(obj => {
         let filePath = `${profile.user_id}/${currentChat.id}/${
-          createdMessages[0].id
+          (createdMessages[0] as any).id
         }/${uuidv4()}`
 
         return uploadMessageImage(filePath, obj.file as File).catch(error => {
@@ -481,13 +481,13 @@ export const handleCreateMessages = async (
       ...prevImages,
       ...newMessageImages.map((obj, index) => ({
         ...obj,
-        messageId: createdMessages[0].id,
+        messageId: (createdMessages[0] as any).id,
         path: paths[index]
       }))
     ])
 
-    const updatedMessage = await updateMessage(createdMessages[0].id, {
-      ...createdMessages[0],
+    const updatedMessage = await updateMessage((createdMessages[0] as any).id, {
+      ...(createdMessages[0] as any),
       image_paths: paths
     })
 
@@ -495,7 +495,7 @@ export const handleCreateMessages = async (
       retrievedFileItems.map(fileItem => {
         return {
           user_id: profile.user_id,
-          message_id: createdMessages[1].id,
+          message_id: (createdMessages[1] as any).id,
           file_item_id: fileItem.id
         }
       })

@@ -81,8 +81,8 @@ export const ChatUI: FC<ChatUIProps> = ({}) => {
 
     const imagePromises: Promise<MessageImage>[] = fetchedMessages.flatMap(
       message =>
-        message.image_paths
-          ? message.image_paths.map(async imagePath => {
+        (message as any).image_paths
+          ? (message as any).image_paths.map(async (imagePath: string) => {
               const url = await getMessageImageFromStorage(imagePath)
 
               if (url) {
@@ -91,7 +91,7 @@ export const ChatUI: FC<ChatUIProps> = ({}) => {
                 const base64 = await convertBlobToBase64(blob)
 
                 return {
-                  messageId: message.id,
+                  messageId: (message as any).id,
                   path: imagePath,
                   base64,
                   url,
