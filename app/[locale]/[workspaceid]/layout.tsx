@@ -136,8 +136,8 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     setChats(chats)
 
     const collectionData =
-      await getCollectionWorkspacesByWorkspaceId(workspaceId)
-    setCollections(collectionData.collections)
+      await getCollectionWorkspacesByWorkspaceId(workspaceId) as any
+    setCollections(collectionData?.collections || [])
 
     const folders = await getFoldersByWorkspaceId(workspaceId)
     setFolders(folders)
