@@ -235,7 +235,7 @@ export default function PricingPage() {
             </div>
             <div>
               <h3 className="font-semibold mb-2">What happens if I exceed my search limit?</h3>
-              <p className="text-gray-300 text-sm">You'll be charged $0.01 per additional search, but we cap overage charges at 2x your plan price to prevent bill shocks.</p>
+              <p className="text-gray-300 text-sm">You&apos;ll be charged $0.01 per additional search, but we cap overage charges at 2x your plan price to prevent bill shocks.</p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Is there a free trial?</h3>
@@ -243,7 +243,7 @@ export default function PricingPage() {
             </div>
             <div>
               <h3 className="font-semibold mb-2">Do you offer refunds?</h3>
-              <p className="text-gray-300 text-sm">We offer a 30-day money-back guarantee. If you're not satisfied, we'll refund your payment, no questions asked.</p>
+              <p className="text-gray-300 text-sm">We offer a 30-day money-back guarantee. If you&apos;re not satisfied, we&apos;ll refund your payment, no questions asked.</p>
             </div>
           </div>
         </div>
