@@ -5,15 +5,17 @@ export async function POST(req: NextRequest) {
   
   try {
     // Call our Nocturnal Archive backend with real research capabilities
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8002'
-    const response = await fetch(`${backendUrl}/api/chat`, {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8000'
+    const response = await fetch(`${backendUrl}/api/research`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message,
-        session_id: sessionId
+        query: message,
+        session_id: sessionId,
+        user_id: "demo-user", // TODO: Get from auth
+        research_type: "comprehensive"
       })
     })
 
@@ -24,10 +26,13 @@ export async function POST(req: NextRequest) {
     const data = await response.json()
     
     return NextResponse.json({
-      response: data.response,
+      response: data.research_summary || data.response,
+      sources: data.sources || [],
+      citations: data.citations || [],
       session_id: data.session_id,
       timestamp: data.timestamp,
-      mode: data.mode || "real_research"
+      mode: "real_research",
+      metadata: data.metadata || {}
     })
 
   } catch (error) {
