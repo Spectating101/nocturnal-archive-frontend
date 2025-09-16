@@ -5,7 +5,8 @@ export async function POST(req: NextRequest) {
   
   try {
     // Call our Nocturnal Archive backend with real research capabilities
-    const response = await fetch('http://127.0.0.1:8002/api/chat', {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8002'
+    const response = await fetch(`${backendUrl}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest) {
     
     // Fallback to demo mode if real research fails
     try {
-      const fallbackResponse = await fetch('http://127.0.0.1:8002/api/chat', {
+      const fallbackResponse = await fetch(`${backendUrl}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,13 +59,59 @@ export async function POST(req: NextRequest) {
       console.error('Fallback also failed:', fallbackError)
     }
     
-    return NextResponse.json(
-      {
-        error: 'Failed to process message',
-        details: error instanceof Error ? error.message : 'Unknown error'
+    // Demo mode with canned responses
+    const demoResponses = {
+      "hello": {
+        response: "Hello! I'm the Nocturnal Archive research assistant. I can help you with academic research, literature reviews, and knowledge synthesis. Try asking me about a specific research topic!",
+        sources: [
+          { title: "Welcome to Nocturnal Archive", url: "#", year: "2024" }
+        ]
       },
-      { status: 500 }
-    )
+      "machine learning": {
+        response: "Machine learning is a subset of artificial intelligence that focuses on algorithms that can learn from data. Here are some key areas:\n\n1. **Supervised Learning**: Learning with labeled examples (classification, regression)\n2. **Unsupervised Learning**: Finding patterns in unlabeled data (clustering, dimensionality reduction)\n3. **Deep Learning**: Neural networks with multiple layers for complex pattern recognition\n\nRecent advances include transformer architectures, federated learning, and explainable AI.",
+        sources: [
+          { title: "The Elements of Statistical Learning", url: "#", year: "2017" },
+          { title: "Deep Learning", url: "#", year: "2016" },
+          { title: "Attention Is All You Need", url: "#", year: "2017" }
+        ]
+      },
+      "research": {
+        response: "I can help you with comprehensive academic research! Here's what I can do:\n\n• **Literature Reviews**: Find and synthesize relevant papers\n• **Citation Analysis**: Track research impact and connections\n• **Knowledge Synthesis**: Combine insights from multiple sources\n• **Research Gaps**: Identify areas needing further investigation\n\nWhat specific research topic would you like to explore?",
+        sources: [
+          { title: "How to Write a Literature Review", url: "#", year: "2020" },
+          { title: "Research Methods in Education", url: "#", year: "2018" }
+        ]
+      }
+    }
+    
+    // Check for demo responses
+    const lowerMessage = message.toLowerCase()
+    let demoResponse = null
+    
+    for (const [key, response] of Object.entries(demoResponses)) {
+      if (lowerMessage.includes(key)) {
+        demoResponse = response
+        break
+      }
+    }
+    
+    if (!demoResponse) {
+      demoResponse = {
+        response: "I'm currently in demo mode. Here's what I can help you with:\n\n• Academic research and literature reviews\n• Machine learning and AI topics\n• Scientific knowledge synthesis\n• Citation analysis and research gaps\n\nTry asking about 'machine learning', 'research methods', or any academic topic!",
+        sources: [
+          { title: "Nocturnal Archive Demo", url: "#", year: "2024" }
+        ]
+      }
+    }
+    
+    return NextResponse.json({
+      response: demoResponse.response,
+      sources: demoResponse.sources,
+      session_id: sessionId || 'demo-session',
+      timestamp: new Date().toISOString(),
+      mode: "demo_mode",
+      note: "Demo mode - Backend connection unavailable"
+    })
   }
 }
 
