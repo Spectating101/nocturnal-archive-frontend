@@ -29,10 +29,11 @@ export default function ResearchPage() {
       try {
         const health = await checkHealth();
         setHealthStatus(health.status);
-        setDemoMode(health.status !== "ok");
+        setDemoMode(false); // Always try real backend first
       } catch (err) {
+        console.error('Health check failed:', err);
         setHealthStatus("down");
-        setDemoMode(true);
+        setDemoMode(false); // Don't mask errors with demo mode
       }
     };
 
@@ -89,36 +90,14 @@ export default function ResearchPage() {
     setError(null);
 
     try {
-      let response: ResearchResponse;
-
-      if (demoMode) {
-        // Demo mode - use canned responses
-        const lowerQuery = query.toLowerCase();
-        let demoResponse = demoResponses["research"]; // default
-        
-        for (const [key, value] of Object.entries(demoResponses)) {
-          if (lowerQuery.includes(key)) {
-            demoResponse = value;
-            break;
-          }
-        }
-
-        response = {
-          answer: demoResponse.answer,
-          citations: demoResponse.citations,
-          session_id: "demo-session",
-          timestamp: new Date().toISOString()
-        };
-      } else {
-        // Real backend call
-        response = await askResearch({
-          query,
-          mode: "academic",
-          history: messages.filter(m => m.type === 'user').map(m => m.content),
-          session_id: "research-session",
-          user_id: "demo-user"
-        });
-      }
+      // Always try real backend call first
+      const response = await askResearch({
+        query,
+        mode: "academic",
+        history: messages.filter(m => m.type === 'user').map(m => m.content),
+        session_id: "research-session",
+        user_id: "demo-user"
+      });
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -131,8 +110,22 @@ export default function ResearchPage() {
       setMessages(prev => [...prev, assistantMessage]);
       setQuery("");
     } catch (err: any) {
-      setError(err.message || "Failed to get research response");
+      console.error('Research API Error:', err);
+      
+      // Show the real error instead of masking it
+      const errorMessage = err.message || "Failed to connect to research backend";
+      setError(`Backend Error: ${errorMessage}`);
       setTraceId(err.traceId);
+      
+      // Add error message to chat
+      const errorChatMessage: Message = {
+        id: `error-${Date.now()}`,
+        type: 'assistant',
+        content: `❌ **Connection Error**: ${errorMessage}\n\n**Possible causes:**\n• Backend server is not running\n• Incorrect API URL configuration\n• Network connectivity issues\n• CORS configuration problems\n\n**Next steps:**\n1. Check if your FastAPI backend is running\n2. Verify NEXT_PUBLIC_API_URL environment variable\n3. Check browser console for detailed error logs`,
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, errorChatMessage]);
     } finally {
       setLoading(false);
     }
@@ -174,16 +167,19 @@ export default function ResearchPage() {
               <h1 className="text-xl font-bold text-white">AI Research Assistant</h1>
             </div>
             <div className="flex items-center space-x-2">
-              {demoMode && (
-                <div className="flex items-center space-x-2 px-3 py-1 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
-                  <IconInfoCircle className="w-4 h-4 text-yellow-400" />
-                  <span className="text-sm text-yellow-300">Demo Mode</span>
-                </div>
-              )}
-              <div className={`w-2 h-2 rounded-full ${
-                healthStatus === "ok" ? "bg-green-400" : 
-                healthStatus === "degraded" ? "bg-yellow-400" : "bg-red-400"
-              }`} />
+              <div className="flex items-center space-x-2 px-3 py-1 bg-gray-800/50 border border-gray-700 rounded-lg">
+                <div className={`w-2 h-2 rounded-full ${
+                  healthStatus === "ok" ? "bg-green-400" : 
+                  healthStatus === "degraded" ? "bg-yellow-400" : "bg-red-400"
+                }`} />
+                <span className={`text-sm ${
+                  healthStatus === "ok" ? "text-green-400" : 
+                  healthStatus === "degraded" ? "text-yellow-400" : "text-red-400"
+                }`}>
+                  {healthStatus === "ok" ? "Backend Online" : 
+                   healthStatus === "degraded" ? "Backend Degraded" : "Backend Offline"}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -344,9 +340,13 @@ export default function ResearchPage() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300 text-sm">Mode</span>
-                  <span className={`text-sm ${demoMode ? "text-yellow-400" : "text-green-400"}`}>
-                    {demoMode ? "Demo" : "Live"}
+                  <span className="text-gray-300 text-sm">API Status</span>
+                  <span className={`text-sm ${
+                    healthStatus === "ok" ? "text-green-400" : 
+                    healthStatus === "degraded" ? "text-yellow-400" : "text-red-400"
+                  }`}>
+                    {healthStatus === "ok" ? "Connected" : 
+                     healthStatus === "degraded" ? "Limited" : "Disconnected"}
                   </span>
                 </div>
               </div>

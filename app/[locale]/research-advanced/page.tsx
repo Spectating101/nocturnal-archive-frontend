@@ -75,10 +75,11 @@ export default function AdvancedResearchPage() {
       try {
         const health = await checkHealth();
         setHealthStatus(health.status);
-        setDemoMode(health.status !== "ok");
+        setDemoMode(false); // Always try real backend first
       } catch (err) {
+        console.error('Health check failed:', err);
         setHealthStatus("down");
-        setDemoMode(true);
+        setDemoMode(false); // Don't mask errors with demo mode
       }
     };
 
